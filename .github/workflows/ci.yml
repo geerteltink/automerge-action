@@ -13,6 +13,7 @@ jobs:
         id: rebase
         with:
           command: rebase
+          debug: true
       - name: Merge
         uses: ./ # Uses an action in the root directory
         id: merge
