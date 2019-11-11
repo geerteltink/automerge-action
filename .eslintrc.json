@@ -4,8 +4,14 @@
     "es6": true,
     "node": true
   },
-  "extends": ["airbnb-base"],
+  "extends": [
+    "airbnb-base"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2018
+  },
   "rules": {
-    "no-console": "off"
+    "no-console": "off",
+    "camelcase": "off"
   }
 }

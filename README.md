@@ -28,3 +28,4 @@ with:
 
 - https://medium.com/mergify/automatic-merge-of-github-security-fixes-87d7781140c0
 - https://alexwlchan.net/2019/03/creating-a-github-action-to-auto-merge-pull-requests/
+- https://jeffrafter.com/working-with-github-actions/
