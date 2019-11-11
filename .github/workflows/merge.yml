@@ -1,6 +1,6 @@
 name: merge
 
-on: status
+on: check_suite
 
 jobs:
   hello_world_job:
