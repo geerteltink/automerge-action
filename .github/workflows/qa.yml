@@ -1,9 +1,9 @@
 name: qa
 
-on:
-  push:
-    paths:
-      - 'src/*'
+on: push
+#  push:
+#    paths:
+#      - 'src/*'
 
 jobs:
   qa:

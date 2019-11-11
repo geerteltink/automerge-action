@@ -7,17 +7,12 @@ on:
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: merge
+    name: squash-merge
     steps:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Merge
+      - name: Squash merge
         uses: ./ # Uses an action in the root directory
-        id: merge
         with:
-          command: merge
           debug: true
-      - name: Get the output time
-        run: |
-          echo "The merge time was ${{ steps.merge.outputs.time }}"
