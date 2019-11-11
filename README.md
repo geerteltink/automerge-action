@@ -16,7 +16,7 @@ The time we greeted you.
 
 ## Example usage
 
-uses: actions/hello-world-javascript-action@v1
+uses: xtreamwayz/auto-merge-action
 with:
   who-to-greet: 'Mona the Octocat'
 
