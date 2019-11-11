@@ -1,6 +1,6 @@
 name: ci
 
-on: [push]
+on: pull_request
 
 jobs:
   hello_world_job:
@@ -10,24 +10,12 @@ jobs:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
         uses: actions/checkout@v1
-      - name: Rebase
-        uses: ./ # Uses an action in the root directory
-        id: rebase
-        with:
-          command: rebase
-          debug: true
-      - name: Merge
-        uses: ./ # Uses an action in the root directory
-        id: merge
-        with:
-          command: merge
       - name: Release
         uses: ./ # Uses an action in the root directory
         id: release
         with:
           command: release
+          debug: true
       - name: Get the output time
         run: |
-          echo "The rebase time was ${{ steps.rebase.outputs.time }}"
-          echo "The merge time was ${{ steps.merge.outputs.time }}"
           echo "The release time was ${{ steps.release.outputs.time }}"
