@@ -1,8 +1,7 @@
 name: merge
 
 on:
-  check_run:
-    types: completed
+  check_run
 
 jobs:
   hello_world_job:
