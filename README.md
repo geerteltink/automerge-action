@@ -6,13 +6,7 @@ This action merges pull requests if all requirements are met.
 
 ### `debug`
 
-**Optional** The name of the person to greet. Default `"World"`.
-
-## Outputs
-
-### `time`
-
-The time the command ran.
+**Optional**
 
 ## Example usage
 
