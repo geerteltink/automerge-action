@@ -1,7 +1,12 @@
 name: merge
 
 on:
-  check_run
+  check_run:
+    types: [completed]
+  check_suite:
+    types: [completed]
+  pull_request:
+    types: [synchronize, labeled]
 
 jobs:
   hello_world_job:

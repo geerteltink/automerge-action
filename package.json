@@ -1,7 +1,7 @@
 {
-  "name": "@xtreamwayz/ci",
+  "name": "@xtreamwayz/auto-merge-action",
   "version": "1.0.0",
-  "description": "Continuous integration GitHub action",
+  "description": "Auto merge pull request GitHub action",
   "main": "index.js",
   "scripts": {
     "lint": "eslint ./src",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/geerteltink/ci.git"
+    "url": "git+https://github.com/xtreamwayz/auto-merge-action.git"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/geerteltink/ci/issues"
+    "url": "https://github.com/xtreamwayz/auto-merge-action/issues"
   },
-  "homepage": "https://github.com/geerteltink/ci#readme",
+  "homepage": "https://github.com/xtreamwayz/auto-merge-action#readme",
   "dependencies": {
     "@actions/core": "^1.2.0",
     "@actions/github": "^1.1.0"
