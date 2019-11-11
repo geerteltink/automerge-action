@@ -4,21 +4,21 @@ This action merges pull requests if all requirements are met.
 
 ## Inputs
 
-### `who-to-greet`
+### `debug`
 
-**Required** The name of the person to greet. Default `"World"`.
+**Optional** The name of the person to greet. Default `"World"`.
 
 ## Outputs
 
 ### `time`
 
-The time we greeted you.
+The time the command ran.
 
 ## Example usage
 
 uses: xtreamwayz/auto-merge-action
 with:
-  who-to-greet: 'Mona the Octocat'
+  debug: true
 
 ## Resources
 
