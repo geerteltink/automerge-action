@@ -1,4 +1,7 @@
-on: [push]
+on:
+  push:
+    paths:
+      - 'src/*'
 
 jobs:
   qa:
@@ -9,5 +12,5 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: '12.x'
-      - run: npm install
-      - run: npm run lint
+      - run: npx install-peerdeps --global eslint-config-airbnb-base
+      - run: eslint ./src
