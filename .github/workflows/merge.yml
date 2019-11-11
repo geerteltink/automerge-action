@@ -1,4 +1,4 @@
-name: ci
+name: merge
 
 on:
   check_run:
@@ -7,7 +7,7 @@ on:
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: ci
+    name: merge
     steps:
       # To use this repository's private action, you must check out the repository
       - name: Checkout

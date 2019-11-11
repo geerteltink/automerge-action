@@ -1,11 +1,11 @@
-name: ci
+name: release
 
 on: pull_request
 
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
-    name: ci
+    name: release
     steps:
       # To use this repository's private action, you must check out the repository
       - name: Checkout
