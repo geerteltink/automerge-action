@@ -1,6 +1,19 @@
 name: merge
 
-on: check_suite
+on:
+  check_suite:
+    types:
+      - completed
+  pull_request:
+    types:
+      - labeled
+      - unlabeled
+      - synchronize
+      - opened
+      - edited
+      - ready_for_review
+      - reopened
+      - unlocked
 
 jobs:
   hello_world_job:
