@@ -1646,13 +1646,13 @@ const run = async () => {
 
   for (const pullRequest of context.payload.check_suite.pull_requests) {
     // const pullRequestId = pullRequest.id;
-    const pullRequestNumber = pullRequest.number;
-    core.info(`pull request detected: ${pullRequestNumber}`);
+    const pull_number = pullRequest.number;
+    core.info(`pull request detected: ${pull_number}`);
 
     const pr = await github.pulls.get({
       owner,
       repo,
-      pullRequestNumber,
+      pull_number,
     });
 
     console.log(JSON.stringify(pr, undefined, 2));

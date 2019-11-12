@@ -63,7 +63,7 @@ describe('Create Release', () => {
     expect(get).toHaveBeenCalledWith({
       owner: 'owner',
       repo: 'repo',
-      pullRequestNumber: 6,
+      pull_number: 6,
     });
   });
 });
