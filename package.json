@@ -2,10 +2,11 @@
   "name": "@xtreamwayz/auto-merge-action",
   "version": "1.0.0",
   "description": "Auto merge pull request GitHub action",
-  "main": "index.js",
+  "main": "dist/main.js",
   "scripts": {
+    "build": "ncc build ./src/main.js",
     "lint": "eslint ./src",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run lint"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
     "@actions/github": "^1.1.0"
   },
   "devDependencies": {
+    "@zeit/ncc": "^0.20.5",
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2"
