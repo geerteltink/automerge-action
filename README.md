@@ -42,3 +42,8 @@ npm install-peerdeps --dev eslint-config-airbnb-base
 - https://jeffrafter.com/working-with-github-actions/
 - https://github.com/pascalgn/automerge-action
 - https://github.com/gimenete/eslint-action/blob/master/lib/run.js
+
+### Testing
+
+- https://github.com/actions/create-release/blob/master/src/create-release.js
+- https://github.com/actions/create-release/blob/master/tests/create-release.test.js
