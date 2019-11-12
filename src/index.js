@@ -1,4 +1,4 @@
-import { info, setFailed, getInput } from '@actions/core';
+import { setFailed, getInput } from '@actions/core';
 import { context, GitHub } from '@actions/github';
 
 // const core = require('@actions/core');

@@ -7745,7 +7745,7 @@ const main = async () => {
 
   const pullRequests = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.check_suite.pull_requests;
   if (pullRequests === undefined) {
-    Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)('Skipping: pull request information is unavailable.');
+    console.log('Skipping: pull request information is unavailable.');
     return;
   }
 
