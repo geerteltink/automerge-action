@@ -36,6 +36,8 @@ module.exports =
 /******/ 		// Load entry module and return exports
 /******/ 		return __webpack_require__(676);
 /******/ 	};
+/******/ 	// initialize runtime
+/******/ 	runtime(__webpack_require__);
 /******/
 /******/ 	// run startup
 /******/ 	return startup();
@@ -7717,15 +7719,45 @@ module.exports = function btoa(str) {
 /***/ }),
 
 /***/ 676:
-/***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
+/***/ (function(__unusedmodule, __webpack_exports__, __webpack_require__) {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(470);
+/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(469);
+/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
 const core = __webpack_require__(470);
-const { GitHub, context } = __webpack_require__(469);
 
-const {
-  GITHUB_TOKEN, GITHUB_ACTION, GITHUB_SHA, GITHUB_REF,
-} = process.env;
 
+
+const main = async () => {
+  // Dump event data first
+  console.log(JSON.stringify(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context, undefined, 2));
+
+  // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
+  const GITHUB_TOKEN = getInput('GITHUB_TOKEN');
+  const github = new _actions_github__WEBPACK_IMPORTED_MODULE_1__.GitHub(GITHUB_TOKEN);
+
+  // Get owner and repo from context of payload that triggered the action
+  const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo;
+
+  const pullRequests = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.check_suite.pull_requests;
+  if (pullRequests === undefined) {
+    Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Skipping: pull request information is unavailable.`);
+    return;
+  }
+
+  for (const pullRequest of pullRequests) {
+    console.log(JSON.stringify(pullRequest, undefined, 2));
+  }
+};
+
+main().catch((error) => {
+  Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(`An unexpected error occurred: ${error}, ${error.stack}.`);
+});
+
+/*
 async function run() {
   try {
     // Dump event data first
@@ -7746,20 +7778,15 @@ async function run() {
     });
 
     console.log(JSON.stringify(suites, undefined, 2));
-
-    /*
-    if ('check_suite' in context && 'pull_request' in context.check_suite) {
-
-    }
-    */
   } catch (error) {
     core.setFailed(error.message);
   }
 }
 
-if (require.main === require.cache[eval('__filename')]) {
+if (require.main === module) {
   run();
 }
+*/
 
 
 /***/ }),
@@ -11232,4 +11259,43 @@ function onceStrict (fn) {
 
 /***/ })
 
-/******/ });
+/******/ },
+/******/ function(__webpack_require__) { // webpackRuntimeModules
+/******/ 	"use strict";
+/******/ 
+/******/ 	/* webpack/runtime/make namespace object */
+/******/ 	!function() {
+/******/ 		// define __esModule on exports
+/******/ 		__webpack_require__.r = function(exports) {
+/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
+/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
+/******/ 			}
+/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	!function() {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = function(module) {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				function getDefault() { return module['default']; } :
+/******/ 				function getModuleExports() { return module; };
+/******/ 			__webpack_require__.d(getter, 'a', getter);
+/******/ 			return getter;
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ 	/* webpack/runtime/define property getter */
+/******/ 	!function() {
+/******/ 		// define getter function for harmony exports
+/******/ 		var hasOwnProperty = Object.prototype.hasOwnProperty;
+/******/ 		__webpack_require__.d = function(exports, name, getter) {
+/******/ 			if(!hasOwnProperty.call(exports, name)) {
+/******/ 				Object.defineProperty(exports, name, { enumerable: true, get: getter });
+/******/ 			}
+/******/ 		};
+/******/ 	}();
+/******/ 	
+/******/ }
+);

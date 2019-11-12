@@ -1,10 +1,34 @@
 const core = require('@actions/core');
-const { GitHub, context } = require('@actions/github');
+import { info, error, setFailed } from '@actions/core';
+import { context, GitHub } from '@actions/github';
 
-const {
-  GITHUB_TOKEN, GITHUB_ACTION, GITHUB_SHA, GITHUB_REF,
-} = process.env;
+const main = async () => {
+  // Dump event data first
+  console.log(JSON.stringify(context, undefined, 2));
 
+  // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
+  const GITHUB_TOKEN = getInput('GITHUB_TOKEN');
+  const github = new GitHub(GITHUB_TOKEN);
+
+  // Get owner and repo from context of payload that triggered the action
+  const { owner, repo } = context.repo;
+
+  const pullRequests = context.payload.check_suite.pull_requests;
+  if (pullRequests === undefined) {
+    info(`Skipping: pull request information is unavailable.`);
+    return;
+  }
+
+  for (const pullRequest of pullRequests) {
+    console.log(JSON.stringify(pullRequest, undefined, 2));
+  }
+};
+
+main().catch((error) => {
+  setFailed(`An unexpected error occurred: ${error}, ${error.stack}.`);
+});
+
+/*
 async function run() {
   try {
     // Dump event data first
@@ -25,12 +49,6 @@ async function run() {
     });
 
     console.log(JSON.stringify(suites, undefined, 2));
-
-    /*
-    if ('check_suite' in context && 'pull_request' in context.check_suite) {
-
-    }
-    */
   } catch (error) {
     core.setFailed(error.message);
   }
@@ -39,3 +57,4 @@ async function run() {
 if (require.main === module) {
   run();
 }
+*/
