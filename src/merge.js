@@ -11,7 +11,8 @@ const run = async () => {
     || context.payload.check_suite === undefined
     || context.payload.check_suite.pull_requests === undefined
   ) {
-    core.info('Skip merge: pull request information is unavailable.');
+    core.info('Could not get pull request information from context, exiting');
+    console.log('Could not get pull request information from context, exiting');
     return;
   }
 
@@ -31,10 +32,6 @@ const run = async () => {
 
     console.log(JSON.stringify(pr, undefined, 2));
   }
-
-
-  // const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
-  // const octokit = new GitHub(GITHUB_TOKEN);
 
   /*
     // Dump event data first
