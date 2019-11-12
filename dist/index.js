@@ -36,8 +36,6 @@ module.exports =
 /******/ 		// Load entry module and return exports
 /******/ 		return __webpack_require__(676);
 /******/ 	};
-/******/ 	// initialize runtime
-/******/ 	runtime(__webpack_require__);
 /******/
 /******/ 	// run startup
 /******/ 	return startup();
@@ -1619,6 +1617,82 @@ module.exports = opts => {
 
 	return result;
 };
+
+
+/***/ }),
+
+/***/ 177:
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+const core = __webpack_require__(470);
+const { GitHub, context } = __webpack_require__(469);
+
+const run = async () => {
+  // Get owner and repo from context of payload that triggered the action
+  const { owner, repo } = context.repo;
+  core.debug(`repository: ${owner}/${repo}`);
+
+  if (
+    context.payload === undefined
+    || context.payload.check_suite === undefined
+    || context.payload.check_suite.pull_requests === undefined
+  ) {
+    core.info('Skip merge: pull request information is unavailable.');
+    return;
+  }
+
+  const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
+  const github = new GitHub(GITHUB_TOKEN);
+
+  for (const pullRequest of context.payload.check_suite.pull_requests) {
+    // const pullRequestId = pullRequest.id;
+    const pull_number = pullRequest.number;
+    core.info(`pull request detected: ${pull_number}`);
+
+    const pr = await github.pulls.get({
+      owner,
+      repo,
+      pull_number,
+    });
+
+    console.log(JSON.stringify(pr, undefined, 2));
+  }
+
+
+  // const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
+  // const octokit = new GitHub(GITHUB_TOKEN);
+
+  /*
+    // Dump event data first
+    console.log(JSON.stringify(github.context, undefined, 2));
+
+    // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
+    const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
+    const octokit = new github.GitHub(GITHUB_TOKEN);
+
+
+    if (github.context.payload.check_suite.pull_requests === undefined) {
+      console.log('Skipping: pull request information is unavailable.');
+      return;
+    }
+
+    for (const pullRequest of github.context.payload.check_suite.pull_requests) {
+      // const pullRequestId = pullRequest.id;
+      const pullRequestNumber = pullRequest.number;
+      console.log(JSON.stringify(pullRequest, undefined, 2));
+
+      const pr = await octokit.pulls.get({
+        owner,
+        repo,
+        pullRequestNumber,
+      });
+
+      console.log(JSON.stringify(pr, undefined, 2));
+    }
+  */
+};
+
+module.exports = run;
 
 
 /***/ }),
@@ -7719,84 +7793,16 @@ module.exports = function btoa(str) {
 /***/ }),
 
 /***/ 676:
-/***/ (function(__unusedmodule, __webpack_exports__, __webpack_require__) {
+/***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(470);
-/* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(469);
-/* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
+const core = __webpack_require__(470);
+const run = __webpack_require__(177);
 
-
-
-// const core = require('@actions/core');
-
-const main = async () => {
-  // Dump event data first
-  console.log(JSON.stringify(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context, undefined, 2));
-
-  // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-  const GITHUB_TOKEN = Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('GITHUB_TOKEN');
-  const github = new _actions_github__WEBPACK_IMPORTED_MODULE_1__.GitHub(GITHUB_TOKEN);
-
-  // Get owner and repo from context of payload that triggered the action
-  const { owner, repo } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo;
-
-  if (_actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.check_suite.pull_requests === undefined) {
-    console.log('Skipping: pull request information is unavailable.');
-    return;
-  }
-
-  for (const pullRequest of _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.check_suite.pull_requests) {
-    // const pullRequestId = pullRequest.id;
-    const pullRequestNumber = pullRequest.number;
-
-    const pr = await github.pulls.get({
-      owner,
-      repo,
-      pullRequestNumber,
-    });
-
-    console.log(JSON.stringify(pr, undefined, 2));
-  }
-};
-
-main().catch((error) => {
-  Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed)(`An unexpected error occurred: ${error}, ${error.stack}.`);
-});
-
-/*
-async function run() {
-  try {
-    // Dump event data first
-    console.log(JSON.stringify(context, undefined, 2));
-
-    // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-    const github = new GitHub(GITHUB_TOKEN);
-
-    // Get owner and repo from context of payload that triggered the action
-    const { owner, repo } = context.repo;
-
-    console.log(`owner: ${owner}/${repo}, GITHUB_ACTION:
-    ${GITHUB_ACTION}, GITHUB_SHA: ${GITHUB_SHA}, GITHUB_REF: ${GITHUB_REF}`);
-
-    const suites = await github.checks.listSuitesForRef({
-      owner,
-      repo,
-      GITHUB_SHA,
-    });
-
-    console.log(JSON.stringify(suites, undefined, 2));
-  } catch (error) {
-    core.setFailed(error.message);
-  }
+if (require.main === require.cache[eval('__filename')]) {
+  run().catch((error) => {
+    core.setFailed(`An unexpected error occurred: ${error}, ${error.stack}.`);
+  });
 }
-
-if (require.main === module) {
-  run();
-}
-*/
 
 
 /***/ }),
@@ -11269,43 +11275,4 @@ function onceStrict (fn) {
 
 /***/ })
 
-/******/ },
-/******/ function(__webpack_require__) { // webpackRuntimeModules
-/******/ 	"use strict";
-/******/ 
-/******/ 	/* webpack/runtime/make namespace object */
-/******/ 	!function() {
-/******/ 		// define __esModule on exports
-/******/ 		__webpack_require__.r = function(exports) {
-/******/ 			if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
-/******/ 				Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
-/******/ 			}
-/******/ 			Object.defineProperty(exports, '__esModule', { value: true });
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	!function() {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = function(module) {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				function getDefault() { return module['default']; } :
-/******/ 				function getModuleExports() { return module; };
-/******/ 			__webpack_require__.d(getter, 'a', getter);
-/******/ 			return getter;
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ 	/* webpack/runtime/define property getter */
-/******/ 	!function() {
-/******/ 		// define getter function for harmony exports
-/******/ 		var hasOwnProperty = Object.prototype.hasOwnProperty;
-/******/ 		__webpack_require__.d = function(exports, name, getter) {
-/******/ 			if(!hasOwnProperty.call(exports, name)) {
-/******/ 				Object.defineProperty(exports, name, { enumerable: true, get: getter });
-/******/ 			}
-/******/ 		};
-/******/ 	}();
-/******/ 	
-/******/ }
-);
+/******/ });
