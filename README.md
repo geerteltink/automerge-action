@@ -10,15 +10,20 @@ This action merges pull requests if all requirements are met.
 
 ## Example usage
 
+```yaml
 uses: xtreamwayz/auto-merge-action
 with:
   debug: true
+```
 
 ## Develop
 
-npm install --production
+```bash
+npm install
+npm run build
 
 npm install-peerdeps --dev eslint-config-airbnb-base
+```
 
 ## Resources
 
