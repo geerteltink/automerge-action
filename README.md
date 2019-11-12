@@ -32,6 +32,13 @@ npm install-peerdeps --dev eslint-config-airbnb-base
 - https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables
 - https://octokit.github.io/rest.js/#octokit-routes-repos
 
+### Testing
+
+- https://github.com/actions/create-release/blob/master/src/create-release.js
+- https://github.com/actions/create-release/blob/master/tests/create-release.test.js
+
+### Other
+
 - https://github.com/ridedott/dependabot-auto-merge-action
 - https://github.com/sdras/awesome-actions
 - https://doc.mergify.io/getting-started.html
@@ -42,8 +49,3 @@ npm install-peerdeps --dev eslint-config-airbnb-base
 - https://jeffrafter.com/working-with-github-actions/
 - https://github.com/pascalgn/automerge-action
 - https://github.com/gimenete/eslint-action/blob/master/lib/run.js
-
-### Testing
-
-- https://github.com/actions/create-release/blob/master/src/create-release.js
-- https://github.com/actions/create-release/blob/master/tests/create-release.test.js
