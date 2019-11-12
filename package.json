@@ -2,9 +2,9 @@
   "name": "@xtreamwayz/auto-merge-action",
   "version": "1.0.0",
   "description": "Auto merge pull request GitHub action",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "ncc build ./src/main.js",
+    "build": "ncc build ./src/index.js",
     "lint": "eslint ./src",
     "test": "npm run lint"
   },
