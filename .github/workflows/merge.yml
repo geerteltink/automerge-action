@@ -21,3 +21,5 @@ jobs:
         uses: ./ # Uses an action in the root directory
         with:
           debug: true
+        env:
+          ACTIONS_STEP_DEBUG: true
