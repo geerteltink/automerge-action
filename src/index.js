@@ -1,6 +1,7 @@
-const core = require('@actions/core');
-import { info, error, setFailed } from '@actions/core';
+import { info, setFailed, getInput } from '@actions/core';
 import { context, GitHub } from '@actions/github';
+
+// const core = require('@actions/core');
 
 const main = async () => {
   // Dump event data first
@@ -15,12 +16,21 @@ const main = async () => {
 
   const pullRequests = context.payload.check_suite.pull_requests;
   if (pullRequests === undefined) {
-    info(`Skipping: pull request information is unavailable.`);
+    info('Skipping: pull request information is unavailable.');
     return;
   }
 
   for (const pullRequest of pullRequests) {
-    console.log(JSON.stringify(pullRequest, undefined, 2));
+    // const pullRequestId = pullRequest.id;
+    const pullRequestNumber = pullRequest.number;
+
+    const pr = await github.pulls.get({
+      owner,
+      repo,
+      pullRequestNumber,
+    });
+
+    console.log(JSON.stringify(pr, undefined, 2));
   }
 };
 
@@ -40,7 +50,8 @@ async function run() {
     // Get owner and repo from context of payload that triggered the action
     const { owner, repo } = context.repo;
 
-    console.log(`owner: ${owner}/${repo}, GITHUB_ACTION: ${GITHUB_ACTION}, GITHUB_SHA: ${GITHUB_SHA}, GITHUB_REF: ${GITHUB_REF}`);
+    console.log(`owner: ${owner}/${repo}, GITHUB_ACTION:
+    ${GITHUB_ACTION}, GITHUB_SHA: ${GITHUB_SHA}, GITHUB_REF: ${GITHUB_REF}`);
 
     const suites = await github.checks.listSuitesForRef({
       owner,

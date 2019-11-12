@@ -7727,16 +7727,17 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _actions_core__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_actions_core__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(469);
 /* harmony import */ var _actions_github__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_actions_github__WEBPACK_IMPORTED_MODULE_1__);
-const core = __webpack_require__(470);
 
 
+
+// const core = require('@actions/core');
 
 const main = async () => {
   // Dump event data first
   console.log(JSON.stringify(_actions_github__WEBPACK_IMPORTED_MODULE_1__.context, undefined, 2));
 
   // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-  const GITHUB_TOKEN = getInput('GITHUB_TOKEN');
+  const GITHUB_TOKEN = Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('GITHUB_TOKEN');
   const github = new _actions_github__WEBPACK_IMPORTED_MODULE_1__.GitHub(GITHUB_TOKEN);
 
   // Get owner and repo from context of payload that triggered the action
@@ -7744,12 +7745,21 @@ const main = async () => {
 
   const pullRequests = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.payload.check_suite.pull_requests;
   if (pullRequests === undefined) {
-    Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)(`Skipping: pull request information is unavailable.`);
+    Object(_actions_core__WEBPACK_IMPORTED_MODULE_0__.info)('Skipping: pull request information is unavailable.');
     return;
   }
 
   for (const pullRequest of pullRequests) {
-    console.log(JSON.stringify(pullRequest, undefined, 2));
+    // const pullRequestId = pullRequest.id;
+    const pullRequestNumber = pullRequest.number;
+
+    const pr = await github.pulls.get({
+      owner,
+      repo,
+      pullRequestNumber,
+    });
+
+    console.log(JSON.stringify(pr, undefined, 2));
   }
 };
 
@@ -7769,7 +7779,8 @@ async function run() {
     // Get owner and repo from context of payload that triggered the action
     const { owner, repo } = context.repo;
 
-    console.log(`owner: ${owner}/${repo}, GITHUB_ACTION: ${GITHUB_ACTION}, GITHUB_SHA: ${GITHUB_SHA}, GITHUB_REF: ${GITHUB_REF}`);
+    console.log(`owner: ${owner}/${repo}, GITHUB_ACTION:
+    ${GITHUB_ACTION}, GITHUB_SHA: ${GITHUB_SHA}, GITHUB_REF: ${GITHUB_REF}`);
 
     const suites = await github.checks.listSuitesForRef({
       owner,
