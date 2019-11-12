@@ -1628,6 +1628,8 @@ const core = __webpack_require__(470);
 const { GitHub, context } = __webpack_require__(469);
 
 const run = async () => {
+  console.log(JSON.stringify(context, undefined, 2));
+
   // Get owner and repo from context of payload that triggered the action
   const { owner, repo } = context.repo;
   core.debug(`repository: ${owner}/${repo}`);
@@ -1637,7 +1639,8 @@ const run = async () => {
     || context.payload.check_suite === undefined
     || context.payload.check_suite.pull_requests === undefined
   ) {
-    core.info('Could not get pull request information from context, exiting');
+    core.info('info Could not get pull request information from context, exiting');
+    core.warning('warning Could not get pull request information from context, exiting');
     console.log('Could not get pull request information from context, exiting');
     return;
   }

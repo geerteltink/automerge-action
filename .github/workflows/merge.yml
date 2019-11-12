@@ -22,4 +22,4 @@ jobs:
           debug: true
           repo-token: ${{ secrets.GITHUB_TOKEN }}
         env:
-          ACTIONS_STEP_DEBUG: true
+          ACTIONS_STEP_DEBUG: false
