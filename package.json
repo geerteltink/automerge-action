@@ -4,6 +4,7 @@
   "description": "Auto merge pull request GitHub action",
   "main": "index.js",
   "scripts": {
+    "build": "ncc build ./src/index.js",
     "lint": "eslint ./src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
