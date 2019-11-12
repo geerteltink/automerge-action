@@ -4,17 +4,12 @@ on:
   check_suite:
     types:
       - completed
+  check_run:
+    types:
+      - completed
   pull_request:
     types:
       - labeled
-      - unlabeled
-      - synchronize
-      - opened
-      - edited
-      - ready_for_review
-      - reopened
-      - unlocked
-  status: {}
 
 jobs:
   hello_world_job:
