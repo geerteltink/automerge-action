@@ -14,6 +14,12 @@ uses: xtreamwayz/auto-merge-action
 with:
   debug: true
 
+## Develop
+
+npm install --production
+
+npm install-peerdeps --dev eslint-config-airbnb-base
+
 ## Resources
 
 - https://github.com/sdras/awesome-actions
