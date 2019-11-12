@@ -7,7 +7,6 @@ on:
   pull_request:
     types:
       - labeled
-      - synchronize
 
 jobs:
   hello_world_job:
@@ -21,5 +20,6 @@ jobs:
         uses: ./ # Uses an action in the root directory
         with:
           debug: true
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
         env:
           ACTIONS_STEP_DEBUG: true

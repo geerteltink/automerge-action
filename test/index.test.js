@@ -42,7 +42,7 @@ describe('Create Release', () => {
     await run();
 
     expect(core.debug).toHaveBeenCalledWith('repository: owner/repo');
-    expect(core.info).toHaveBeenCalledWith('Skip merge: pull request information is unavailable.');
+    expect(core.info).toHaveBeenCalledWith('Could not get pull request information from context, exiting');
   });
 
   test('end if no pull request is found', async () => {
