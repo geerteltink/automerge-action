@@ -7,6 +7,9 @@ const {
 
 async function run() {
   try {
+    // Dump event data first
+    console.log(JSON.stringify(context, undefined, 2));
+
     // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
     const github = new GitHub(GITHUB_TOKEN);
 

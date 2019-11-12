@@ -7728,9 +7728,14 @@ const {
 
 async function run() {
   try {
+    // Dump event data first
+    console.log(JSON.stringify(context, undefined, 2));
+
+    // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
     const github = new GitHub(GITHUB_TOKEN);
-    const owner = context.repository.owner.login;
-    const repo = context.repository.name;
+
+    // Get owner and repo from context of payload that triggered the action
+    const { owner, repo } = context.repo;
 
     console.log(`owner: ${owner}/${repo}, GITHUB_ACTION: ${GITHUB_ACTION}, GITHUB_SHA: ${GITHUB_SHA}, GITHUB_REF: ${GITHUB_REF}`);
 
