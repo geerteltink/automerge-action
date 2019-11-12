@@ -14,13 +14,12 @@ const main = async () => {
   // Get owner and repo from context of payload that triggered the action
   const { owner, repo } = context.repo;
 
-  const pullRequests = context.payload.check_suite.pull_requests;
-  if (pullRequests === undefined) {
+  if (context.payload.check_suite.pull_requests === undefined) {
     console.log('Skipping: pull request information is unavailable.');
     return;
   }
 
-  for (const pullRequest of pullRequests) {
+  for (const pullRequest of context.payload.check_suite.pull_requests) {
     // const pullRequestId = pullRequest.id;
     const pullRequestNumber = pullRequest.number;
 
