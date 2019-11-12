@@ -34,7 +34,7 @@ module.exports =
 /******/ 	// the startup function
 /******/ 	function startup() {
 /******/ 		// Load entry module and return exports
-/******/ 		return __webpack_require__(676);
+/******/ 		return __webpack_require__(31);
 /******/ 	};
 /******/
 /******/ 	// run startup
@@ -388,6 +388,49 @@ module.exports.sync = spawnSync;
 
 module.exports._parse = parse;
 module.exports._enoent = enoent;
+
+
+/***/ }),
+
+/***/ 31:
+/***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
+
+const core = __webpack_require__(470);
+const { GitHub, context } = __webpack_require__(469);
+
+const {
+  GITHUB_TOKEN, GITHUB_ACTION, GITHUB_SHA, GITHUB_REF,
+} = process.env;
+
+async function run() {
+  try {
+    const github = new GitHub(GITHUB_TOKEN);
+    const owner = context.repository.owner.login;
+    const repo = context.repository.name;
+
+    console.log(`owner: ${owner}/${repo}, GITHUB_ACTION: ${GITHUB_ACTION}, GITHUB_SHA: ${GITHUB_SHA}, GITHUB_REF: ${GITHUB_REF}`);
+
+    const suites = await github.checks.listSuitesForRef({
+      owner,
+      repo,
+      GITHUB_SHA,
+    });
+
+    console.log(JSON.stringify(suites, undefined, 2));
+
+    /*
+    if ('check_suite' in context && 'pull_request' in context.check_suite) {
+
+    }
+    */
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+}
+
+if (require.main === require.cache[eval('__filename')]) {
+  run();
+}
 
 
 /***/ }),
@@ -7711,33 +7754,6 @@ function authenticate(state, options) {
 
 module.exports = function btoa(str) {
   return new Buffer(str).toString('base64')
-}
-
-
-/***/ }),
-
-/***/ 676:
-/***/ (function(__unusedmodule, __unusedexports, __webpack_require__) {
-
-const core = __webpack_require__(470);
-const github = __webpack_require__(469);
-
-try {
-  const debug = core.getInput('debug') === 'true';
-  if (debug) {
-    console.log('Enabling debug mode');
-  }
-
-  const time = (new Date()).toTimeString();
-  core.setOutput('time', time);
-
-  // Get the JSON webhook payload for the event that triggered the workflow
-  const payload = JSON.stringify(github.context.payload, undefined, 2);
-  if (debug) {
-    console.log(`The event payload: ${payload}`);
-  }
-} catch (error) {
-  core.setFailed(error.message);
 }
 
 

@@ -10,4 +10,4 @@ outputs:
     description: 'The time the command was executed'
 runs:
   using: 'node12'
-  main: 'dist/index.js'
+  main: 'dist/main.js'
