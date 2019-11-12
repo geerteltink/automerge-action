@@ -1648,10 +1648,12 @@ const run = async () => {
   const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
   const github = new GitHub(GITHUB_TOKEN);
 
+  console.log('processing pull request');
   for (const pullRequest of context.payload.check_suite.pull_requests) {
     // const pullRequestId = pullRequest.id;
     const pull_number = pullRequest.number;
     core.info(`pull request detected: ${pull_number}`);
+    core.log(`pull request detected: ${pull_number}`);
 
     const pr = await github.pulls.get({
       owner,
