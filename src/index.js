@@ -16,7 +16,7 @@ const main = async () => {
 
   const pullRequests = context.payload.check_suite.pull_requests;
   if (pullRequests === undefined) {
-    info('Skipping: pull request information is unavailable.');
+    console.log('Skipping: pull request information is unavailable.');
     return;
   }
 
