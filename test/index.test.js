@@ -6,7 +6,7 @@ const core = require('@actions/core');
 const { GitHub, context } = require('@actions/github');
 const run = require('../src/merge.js');
 
-describe('Create Release', () => {
+describe('Merge pull request', () => {
   let get;
 
   beforeEach(() => {
@@ -42,10 +42,33 @@ describe('Create Release', () => {
     await run();
 
     expect(core.debug).toHaveBeenCalledWith('repository: owner/repo');
-    expect(core.info).toHaveBeenCalledWith('info Could not get pull request information from context, exiting');
+    expect(core.warning).toHaveBeenCalledWith('Could not get pull request information from context, exiting');
   });
 
-  test('end if no pull request is found', async () => {
+  test('pull request number is found in pull_request event', async () => {
+    context.payload.pull_request = {
+      id: 339958849,
+      number: 6,
+    };
+
+    core.getInput = jest
+      .fn()
+      .mockReturnValueOnce('github_token');
+
+    await run();
+
+    expect(core.info).toHaveBeenCalledWith('pull request detected: 6');
+    expect(core.warning).not.toHaveBeenCalled();
+    expect(core.getInput).toHaveBeenCalledWith('repo-token');
+    expect(GitHub).toHaveBeenCalledWith('github_token');
+    expect(get).toHaveBeenCalledWith({
+      owner: 'owner',
+      repo: 'repo',
+      pull_number: 6,
+    });
+  });
+
+  test('pull request number is found in check_suit event', async () => {
     context.payload.check_suite.pull_requests = [
       {
         id: 339958849,
@@ -60,6 +83,9 @@ describe('Create Release', () => {
     await run();
 
     expect(core.info).toHaveBeenCalledWith('pull request detected: 6');
+    expect(core.warning).not.toHaveBeenCalled();
+    expect(core.getInput).toHaveBeenCalledWith('repo-token');
+    expect(GitHub).toHaveBeenCalledWith('github_token');
     expect(get).toHaveBeenCalledWith({
       owner: 'owner',
       repo: 'repo',
