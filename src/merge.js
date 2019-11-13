@@ -39,8 +39,8 @@ const run = async () => {
   }
   core.info(`pull request detected: ${pull_number}`);
 
-  const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
-  const github = new GitHub(GITHUB_TOKEN);
+  const token = core.getInput('repo-token');
+  const github = new GitHub(token);
 
   const pr = await github.pulls.get({
     owner,

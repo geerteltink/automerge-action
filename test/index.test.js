@@ -59,7 +59,7 @@ describe('Merge pull request', () => {
 
     expect(core.info).toHaveBeenCalledWith('pull request detected: 6');
     expect(core.warning).not.toHaveBeenCalled();
-    expect(core.getInput).toHaveBeenCalledWith('GITHUB_TOKEN');
+    expect(core.getInput).toHaveBeenCalledWith('repo-token');
     expect(GitHub).toHaveBeenCalledWith('github_token');
     expect(get).toHaveBeenCalledWith({
       owner: 'owner',
@@ -84,7 +84,7 @@ describe('Merge pull request', () => {
 
     expect(core.info).toHaveBeenCalledWith('pull request detected: 6');
     expect(core.warning).not.toHaveBeenCalled();
-    expect(core.getInput).toHaveBeenCalledWith('GITHUB_TOKEN');
+    expect(core.getInput).toHaveBeenCalledWith('repo-token');
     expect(GitHub).toHaveBeenCalledWith('github_token');
     expect(get).toHaveBeenCalledWith({
       owner: 'owner',
