@@ -1719,20 +1719,25 @@ const run = async () => {
   }
 
   // Merge pull request
-  // https://octokit.github.io/rest.js/#octokit-routes-pulls-merge
-  const pullRequestMergeResponse = await github.pulls.merge({
-    owner,
-    repo,
-    pull_number,
-    commit_title: `merge: pull request (#${pull_number})`,
-    merge_method: 'merge',
-  });
+  try {
+    // https://octokit.github.io/rest.js/#octokit-routes-pulls-merge
+    const pullRequestMergeResponse = await github.pulls.merge({
+      owner,
+      repo,
+      pull_number,
+      commit_title: `merge: pull request (#${pull_number})`,
+      merge_method: 'merge',
+    });
 
-  if (pullRequestMergeResponse.status !== 200) {
-    throw new Error(pullRequestMergeResponse.data.message);
+    if (pullRequestMergeResponse.status !== 200) {
+      core.warning(pullRequestMergeResponse.data.message);
+      return;
+    }
+
+    core.info(pullRequestMergeResponse.data.message);
+  } catch (e) {
+    core.warning(e.message);
   }
-
-  core.info(pullRequestMergeResponse.data.message);
 };
 
 module.exports = run;
