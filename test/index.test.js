@@ -190,7 +190,6 @@ describe('Merge pull request', () => {
         state: 'open',
         mergeable: true,
         merged: false,
-        merge_commit_sha: 'e5bd3914e2e596debea16f433f57875b5b90bcd6',
       });
 
     nock('https://api.github.com')

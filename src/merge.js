@@ -96,7 +96,6 @@ const run = async () => {
     repo,
     pull_number,
     commit_title: `merge: pull request (#${pull_number})`,
-    sha: pullRequestResponseData.merge_commit_sha,
     merge_method: 'rebase',
   });
 
