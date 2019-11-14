@@ -28,27 +28,50 @@ function getPullRequestFromContext() {
 const run = async () => {
   // console.log(JSON.stringify(context, undefined, 2));
 
-  // Get owner and repo from context of payload that triggered the action
   const { owner, repo } = context.repo;
   core.debug(`repository: ${owner}/${repo}`);
 
   const pull_number = getPullRequestFromContext();
   if (!pull_number) {
-    core.warning('Could not get pull request information from context, exiting');
-    return;
+    throw new Error('Could not get pull request information from context');
   }
-  core.info(`pull request detected: ${pull_number}`);
+  core.info(`pull request number: ${pull_number}`);
 
-  const token = core.getInput('repo-token');
+  const token = core.getInput('GITHUB_TOKEN', { require: true });
   const github = new GitHub(token);
 
-  const pr = await github.pulls.get({
+  // Get pull request data
+  const pullRequestResponse = await github.pulls.get({
     owner,
     repo,
     pull_number,
   });
 
-  console.log(JSON.stringify(pr, undefined, 2));
+  console.log(JSON.stringify(pullRequestResponse, undefined, 2));
+
+  const pullRequestResponseStatus = pullRequestResponse.status || undefined;
+  const pullRequestResponseData = pullRequestResponse.data || {};
+
+  core.debug(JSON.stringify(pullRequestResponseStatus));
+  core.debug(JSON.stringify(pullRequestResponseData));
+
+  if (pullRequestResponseStatus !== 200 || Object.entries(pullRequestResponseData).length === 0) {
+    throw new Error('Could not get pull request information from API');
+  }
+  core.info(`retrieved data for pull request #${pull_number}`);
+
+  core.debug(`pull request state: ${pullRequestResponseData.state}`);
+  if (!pullRequestResponseData.state || pullRequestResponseData.state !== 'open') {
+    throw new Error(`Pull request state must be open (currently: ${pullRequestResponseData.state})`);
+  }
+
+  core.debug(`pull request mergeable: ${pullRequestResponseData.mergeable}`);
+  if (!pullRequestResponseData.state || pullRequestResponseData.mergeable !== true) {
+    throw new Error(`Pull request must be mergeable (currently: ${pullRequestResponseData.mergeable})`);
+  }
+
+  console.log('todo');
+  throw new Error('TODO');
 };
 
 module.exports = run;

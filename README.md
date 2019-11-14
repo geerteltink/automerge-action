@@ -34,6 +34,7 @@ npm install-peerdeps --dev eslint-config-airbnb-base
 
 ### Testing
 
+- https://github.com/actions/toolkit/blob/master/packages/github/src/context.ts
 - https://github.com/actions/create-release/blob/master/src/create-release.js
 - https://github.com/actions/create-release/blob/master/tests/create-release.test.js
 
