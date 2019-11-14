@@ -11,11 +11,11 @@ This action merges pull requests if all requirements are met.
 ## Example usage
 
 ```yaml
-uses: xtreamwayz/auto-merge-action
+uses: xtreamwayz/auto-merge-action@master
 with:
-  debug: true
-env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+env:
+  ACTIONS_STEP_DEBUG: true
 ```
 
 ## Develop
