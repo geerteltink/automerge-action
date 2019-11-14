@@ -71,24 +71,24 @@ const run = async () => {
   core.info(`retrieved data for pull request #${pull_number}`);
 
   if (!pullRequestHasLabel(pullRequestResponseData, 'auto-merge')) {
-    core.warning('Pull request must have auto-merge label');
+    core.warning('Pull request does not have the auto-merge label');
     return;
   }
 
   if (pullRequestHasLabel(pullRequestResponseData, 'work-in-progress')) {
-    core.warning('Pull request must not have work-in-progress label');
-    return;
-  }
-
-  core.debug(`pull request state: ${pullRequestResponseData.state}`);
-  if (!pullRequestResponseData.state || pullRequestResponseData.state !== 'open') {
-    core.warning(`Pull request state must be open (currently: ${pullRequestResponseData.state})`);
+    core.warning('Pull request has the work-in-progress label');
     return;
   }
 
   core.debug(`pull request mergeable: ${pullRequestResponseData.mergeable}`);
-  if (!pullRequestResponseData.state || pullRequestResponseData.mergeable !== true) {
-    core.warning(`Pull request must be mergeable (currently: ${pullRequestResponseData.mergeable})`);
+  core.debug(`pull request merged: ${pullRequestResponseData.merged}`);
+  core.debug(`pull request state: ${pullRequestResponseData.state}`);
+  if (
+    pullRequestResponseData.state !== 'open'
+    || pullRequestResponseData.mergeable !== true
+    || pullRequestResponseData.merged !== false
+  ) {
+    core.warning('Pull Request is not in a mergeable state');
     return;
   }
 
