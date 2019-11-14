@@ -1,6 +1,31 @@
 /* eslint-disable global-require */
 const nock = require('nock');
 const path = require('path');
+const os = require('os');
+
+/**
+ * Assert that process.stdout.write calls called with all of the given arguments.
+ *
+ * ex.:
+ *  assertWriteCalls([
+ *    [`Pull request state must be open (currently: closed)${os.EOL}`],
+ *  ]);
+ *//*
+function assertWriteCalls(calls) {
+  expect(process.stdout.write.mock.calls).toEqual(
+    expect.arrayContaining(calls),
+  );
+}
+*/
+
+/**
+ * Assert that process.stdout.write was last called with all of the given arguments.
+ *
+ * ex.: assertLastWriteCall('Pull request state must be open (currently: closed)');
+ */
+function assertLastWriteCall(call) {
+  expect(process.stdout.write).toHaveBeenLastCalledWith(call + os.EOL);
+}
 
 describe('Merge pull request', () => {
   beforeEach(() => {
@@ -8,6 +33,8 @@ describe('Merge pull request', () => {
 
     process.env.GITHUB_TOKEN = 'token';
     process.env.GITHUB_REPOSITORY = 'owner/repo';
+
+    process.stdout.write = jest.fn();
   });
 
   test('it throws an error if pull request is not found', async () => {
@@ -30,7 +57,7 @@ describe('Merge pull request', () => {
     await expect(run()).rejects.toThrow('Could not get pull request information from API');
   });
 
-  test('it throws an error if state is not open', async () => {
+  test('pull request must have auto-merge label', async () => {
     process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
 
     const run = require('../src/merge.js');
@@ -39,13 +66,49 @@ describe('Merge pull request', () => {
       .get('/repos/owner/repo/pulls/6')
       .reply(200, {
         number: 1,
+      });
+
+    await run();
+
+    assertLastWriteCall('::warning::Pull request must have auto-merge label');
+  });
+
+  test('pull request must not have work in progress label', async () => {
+    process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
+
+    const run = require('../src/merge.js');
+
+    nock('https://api.github.com')
+      .get('/repos/owner/repo/pulls/6')
+      .reply(200, {
+        number: 1,
+        labels: [{ name: 'auto-merge' }, { name: 'work-in-progress' }],
+      });
+
+    await run();
+
+    assertLastWriteCall('::warning::Pull request must not have work-in-progress label');
+  });
+
+  test('pull request state must be open', async () => {
+    process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
+
+    const run = require('../src/merge.js');
+
+    nock('https://api.github.com')
+      .get('/repos/owner/repo/pulls/6')
+      .reply(200, {
+        number: 1,
+        labels: [{ name: 'auto-merge' }],
         state: 'closed',
       });
 
-    await expect(run()).rejects.toThrow(/Pull request state must be open/);
+    await run();
+
+    assertLastWriteCall('::warning::Pull request state must be open (currently: closed)');
   });
 
-  test('it throws an error if not mergeable', async () => {
+  test('pull request must be mergeable', async () => {
     process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
 
     const run = require('../src/merge.js');
@@ -54,11 +117,14 @@ describe('Merge pull request', () => {
       .get('/repos/owner/repo/pulls/6')
       .reply(200, {
         number: 1,
+        labels: [{ name: 'auto-merge' }],
         state: 'open',
         mergeable: false,
       });
 
-    await expect(run()).rejects.toThrow(/Pull request must be mergeable/);
+    await run();
+
+    assertLastWriteCall('::warning::Pull request must be mergeable (currently: false)');
   });
 });
 

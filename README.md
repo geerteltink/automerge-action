@@ -27,6 +27,18 @@ npm run build
 npm install-peerdeps --dev eslint-config-airbnb-base
 ```
 
+## Rules
+
+Merge pull request if:
+
+- [x] the `automerge` label is set
+- [x] the `work in progress` label is set
+- [x] the pull request is up to date (open, mergable)
+- [ ] the required checks have passed (if enabled in the branch protection rules)
+- [ ] the required number of review approvals has been given (if enabled in the branch protection rules)
+- [ ] automerge dependabot
+- [ ] status-success=Travis CI - Pull Request
+
 ## Resources
 
 - https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables
