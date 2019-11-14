@@ -1,69 +1,75 @@
+/* eslint-disable global-require */
+const nock = require('nock');
+const path = require('path');
 
-jest.mock('@actions/core');
-jest.mock('@actions/github');
-
-const core = require('@actions/core');
-const { GitHub, context } = require('@actions/github');
-const run = require('../src/merge.js');
-
-describe('Create Release', () => {
-  let get;
-
+describe('Merge pull request', () => {
   beforeEach(() => {
-    get = jest.fn().mockReturnValueOnce({
-      data: {
-        id: 'releaseId',
-        html_url: 'htmlUrl',
-        upload_url: 'uploadUrl',
-      },
-    });
+    jest.resetModules();
 
-    context.repo = {
-      owner: 'owner',
-      repo: 'repo',
-    };
-
-    context.payload = {
-      check_suite: {
-        pull_requests: undefined,
-      },
-    };
-
-    const github = {
-      pulls: {
-        get,
-      },
-    };
-
-    GitHub.mockImplementation(() => github);
+    process.env.GITHUB_TOKEN = 'token';
+    process.env.GITHUB_REPOSITORY = 'owner/repo';
   });
 
-  test('owner and repo is detected and no pull request is found', async () => {
-    await run();
+  test('it throws an error if pull request is not found', async () => {
+    process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.issue.json');
 
-    expect(core.debug).toHaveBeenCalledWith('repository: owner/repo');
-    expect(core.info).toHaveBeenCalledWith('Could not get pull request information from context, exiting');
+    const run = require('../src/merge.js');
+
+    await expect(run()).rejects.toThrow('Could not get pull request information from context');
   });
 
-  test('end if no pull request is found', async () => {
-    context.payload.check_suite.pull_requests = [
-      {
-        id: 339958849,
-        number: 6,
-      },
-    ];
+  test('it should get pr number from check_suite event', async () => {
+    process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
 
-    core.getInput = jest
-      .fn()
-      .mockReturnValueOnce('github_token');
+    const run = require('../src/merge.js');
 
-    await run();
+    nock('https://api.github.com')
+      .get('/repos/owner/repo/pulls/6')
+      .reply(200, {});
 
-    expect(core.info).toHaveBeenCalledWith('pull request detected: 6');
-    expect(get).toHaveBeenCalledWith({
-      owner: 'owner',
-      repo: 'repo',
-      pull_number: 6,
-    });
+    await expect(run()).rejects.toThrow('Could not get pull request information from API');
+  });
+
+  test('it throws an error if state is not open', async () => {
+    process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
+
+    const run = require('../src/merge.js');
+
+    nock('https://api.github.com')
+      .get('/repos/owner/repo/pulls/6')
+      .reply(200, {
+        number: 1,
+        state: 'closed',
+      });
+
+    await expect(run()).rejects.toThrow(/Pull request state must be open/);
+  });
+
+  test('it throws an error if not mergeable', async () => {
+    process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
+
+    const run = require('../src/merge.js');
+
+    nock('https://api.github.com')
+      .get('/repos/owner/repo/pulls/6')
+      .reply(200, {
+        number: 1,
+        state: 'open',
+        mergeable: false,
+      });
+
+    await expect(run()).rejects.toThrow(/Pull request must be mergeable/);
   });
 });
+
+/*
+    state: 'open',
+    locked: false,
+    title: 'ci: test label repo',
+    body: '',
+    number: 1,
+    merged: false,
+    mergeable: true,
+    rebaseable: true,
+    mergeable_state: 'unstable',
+*/

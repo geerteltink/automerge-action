@@ -1,66 +1,77 @@
 const core = require('@actions/core');
 const { GitHub, context } = require('@actions/github');
 
+function getPullRequestFromContext() {
+  if (!context.payload) {
+    return undefined;
+  }
+
+  if (context.payload.pull_request && context.payload.pull_request.number) {
+    // pull_request event
+    return context.payload.pull_request.number;
+  }
+
+  if (!context.payload.check_suite || !context.payload.check_suite.pull_requests) {
+    return undefined;
+  }
+
+  // check_suite event
+  for (const pullRequest of context.payload.check_suite.pull_requests) {
+    if (pullRequest.number) {
+      return pullRequest.number;
+    }
+  }
+
+  return undefined;
+}
+
 const run = async () => {
-  // Get owner and repo from context of payload that triggered the action
+  // console.log(JSON.stringify(context, undefined, 2));
+
   const { owner, repo } = context.repo;
   core.debug(`repository: ${owner}/${repo}`);
 
-  if (
-    context.payload === undefined
-    || context.payload.check_suite === undefined
-    || context.payload.check_suite.pull_requests === undefined
-  ) {
-    core.info('Could not get pull request information from context, exiting');
-    console.log('Could not get pull request information from context, exiting');
-    return;
+  const pull_number = getPullRequestFromContext();
+  if (!pull_number) {
+    throw new Error('Could not get pull request information from context');
+  }
+  core.info(`pull request number: ${pull_number}`);
+
+  const token = core.getInput('GITHUB_TOKEN', { require: true });
+  const github = new GitHub(token);
+
+  // Get pull request data
+  const pullRequestResponse = await github.pulls.get({
+    owner,
+    repo,
+    pull_number,
+  });
+
+  console.log(JSON.stringify(pullRequestResponse, undefined, 2));
+
+  const pullRequestResponseStatus = pullRequestResponse.status || undefined;
+  const pullRequestResponseData = pullRequestResponse.data || {};
+
+  core.debug(JSON.stringify(pullRequestResponseStatus));
+  core.debug(JSON.stringify(pullRequestResponseData));
+
+  if (pullRequestResponseStatus !== 200 || Object.entries(pullRequestResponseData).length === 0) {
+    throw new Error('Could not get pull request information from API');
+  }
+  core.info(`retrieved data for pull request #${pull_number}`);
+
+  core.debug(`pull request state: ${pullRequestResponseData.state}`);
+  if (!pullRequestResponseData.state || pullRequestResponseData.state !== 'open') {
+    throw new Error(`Pull request state must be open (currently: ${pullRequestResponseData.state})`);
   }
 
-  const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
-  const github = new GitHub(GITHUB_TOKEN);
-
-  for (const pullRequest of context.payload.check_suite.pull_requests) {
-    // const pullRequestId = pullRequest.id;
-    const pull_number = pullRequest.number;
-    core.info(`pull request detected: ${pull_number}`);
-
-    const pr = await github.pulls.get({
-      owner,
-      repo,
-      pull_number,
-    });
-
-    console.log(JSON.stringify(pr, undefined, 2));
+  core.debug(`pull request mergeable: ${pullRequestResponseData.mergeable}`);
+  if (!pullRequestResponseData.state || pullRequestResponseData.mergeable !== true) {
+    throw new Error(`Pull request must be mergeable (currently: ${pullRequestResponseData.mergeable})`);
   }
 
-  /*
-    // Dump event data first
-    console.log(JSON.stringify(github.context, undefined, 2));
-
-    // Get authenticated GitHub client (Ocktokit): https://github.com/actions/toolkit/tree/master/packages/github#usage
-    const GITHUB_TOKEN = core.getInput('GITHUB_TOKEN');
-    const octokit = new github.GitHub(GITHUB_TOKEN);
-
-
-    if (github.context.payload.check_suite.pull_requests === undefined) {
-      console.log('Skipping: pull request information is unavailable.');
-      return;
-    }
-
-    for (const pullRequest of github.context.payload.check_suite.pull_requests) {
-      // const pullRequestId = pullRequest.id;
-      const pullRequestNumber = pullRequest.number;
-      console.log(JSON.stringify(pullRequest, undefined, 2));
-
-      const pr = await octokit.pulls.get({
-        owner,
-        repo,
-        pullRequestNumber,
-      });
-
-      console.log(JSON.stringify(pr, undefined, 2));
-    }
-  */
+  console.log('todo');
+  throw new Error('TODO');
 };
 
 module.exports = run;
