@@ -52,6 +52,7 @@ const run = async () => {
   const github = new GitHub(token);
 
   // Get pull request data
+  // https://octokit.github.io/rest.js/#octokit-routes-pulls-get
   const pullRequestResponse = await github.pulls.get({
     owner,
     repo,
@@ -91,12 +92,14 @@ const run = async () => {
     return;
   }
 
+  // Merge pull request
+  // https://octokit.github.io/rest.js/#octokit-routes-pulls-merge
   const pullRequestMergeResponse = await github.pulls.merge({
     owner,
     repo,
     pull_number,
     commit_title: `merge: pull request (#${pull_number})`,
-    merge_method: 'rebase',
+    merge_method: 'merge',
   });
 
   if (pullRequestMergeResponse.status !== 200) {
