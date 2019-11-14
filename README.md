@@ -34,10 +34,10 @@ Merge pull request if:
 - [x] the `automerge` label is set
 - [x] the `work in progress` label is set
 - [x] the pull request is up to date (open, mergable, merged)
-- [ ] the required checks have passed (if enabled in the branch protection rules)
-- [ ] the required number of review approvals has been given (if enabled in the branch protection rules)
+- [x] the required checks have passed (if enabled in the branch protection rules)
+- [x] the required number of review approvals has been given (if enabled in the branch protection rules)
 - [ ] automerge dependabot
-- [ ] status-success=Travis CI - Pull Request
+- [ ] status-success=Travis CI / Circle CI
 
 ## Resources
 

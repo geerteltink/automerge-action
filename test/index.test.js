@@ -141,7 +141,7 @@ describe('Merge pull request', () => {
         number: 1,
         labels: [{ name: 'auto-merge' }],
         state: 'open',
-        mergeable: false,
+        mergeable: true,
         merged: true,
       });
 
@@ -149,16 +149,57 @@ describe('Merge pull request', () => {
 
     assertLastWriteCall('::warning::Pull Request is not in a mergeable state');
   });
-});
 
-/*
-    state: 'open',
-    locked: false,
-    title: 'ci: test label repo',
-    body: '',
-    number: 1,
-    merged: false,
-    mergeable: true,
-    rebaseable: true,
-    mergeable_state: 'unstable',
-*/
+  test('pull request throws error if it can not be merged', async () => {
+    process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
+
+    const run = require('../src/merge.js');
+
+    nock('https://api.github.com')
+      .get('/repos/owner/repo/pulls/6')
+      .reply(200, {
+        number: 1,
+        labels: [{ name: 'auto-merge' }],
+        state: 'open',
+        mergeable: true,
+        merged: false,
+        merge_commit_sha: 'e5bd3914e2e596debea16f433f57875b5b90bcd6',
+      });
+
+    nock('https://api.github.com')
+      .put('/repos/owner/repo/pulls/6/merge')
+      .reply(405, {
+        message: 'Pull Request is not mergeable',
+      });
+
+    await expect(run()).rejects.toThrow('Pull Request is not mergeable');
+  });
+
+  test('pull request is merged', async () => {
+    process.env.GITHUB_EVENT_PATH = path.join(__dirname, 'fixtures/ctx.check-suite.json');
+
+    const run = require('../src/merge.js');
+
+    nock('https://api.github.com')
+      .get('/repos/owner/repo/pulls/6')
+      .reply(200, {
+        number: 1,
+        labels: [{ name: 'auto-merge' }],
+        state: 'open',
+        mergeable: true,
+        merged: false,
+        merge_commit_sha: 'e5bd3914e2e596debea16f433f57875b5b90bcd6',
+      });
+
+    nock('https://api.github.com')
+      .put('/repos/owner/repo/pulls/6/merge')
+      .reply(200, {
+        merged: true,
+        message: 'Pull Request successfully merged',
+      });
+
+    await run();
+
+    assertLastWriteCall('Pull Request successfully merged');
+  });
+});

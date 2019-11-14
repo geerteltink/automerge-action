@@ -1683,8 +1683,6 @@ const run = async () => {
     pull_number,
   });
 
-  console.log(JSON.stringify(pullRequestResponse, undefined, 2));
-
   const pullRequestResponseStatus = pullRequestResponse.status || undefined;
   const pullRequestResponseData = pullRequestResponse.data || {};
 
@@ -1718,8 +1716,20 @@ const run = async () => {
     return;
   }
 
-  console.log('todo');
-  throw new Error('TODO');
+  const pullRequestMergeResponse = await github.pulls.merge({
+    owner,
+    repo,
+    pull_number,
+    commit_title: `merge: pull request (#${pull_number})`,
+    sha: pullRequestResponseData.merge_commit_sha,
+    merge_method: 'rebase',
+  });
+
+  if (pullRequestMergeResponse.status !== 200) {
+    throw new Error(pullRequestMergeResponse.data.message);
+  }
+
+  core.info(pullRequestMergeResponse.data.message);
 };
 
 module.exports = run;
