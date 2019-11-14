@@ -22,9 +22,9 @@ env:
 
 ```bash
 npm install
+npm run test
+npm run lint
 npm run build
-
-npm install-peerdeps --dev eslint-config-airbnb-base
 ```
 
 ## Rules
@@ -36,29 +36,16 @@ Merge pull request if:
 - [x] the pull request is up to date (open, mergable, merged)
 - [x] the required checks have passed (if enabled in the branch protection rules)
 - [x] the required number of review approvals has been given (if enabled in the branch protection rules)
-- [ ] automerge dependabot
-- [ ] status-success=Travis CI / Circle CI
+- [ ] TODO: automerge dependabot
+- [ ] TODO: require check_suite (Travis CI / Circle CI)
 
-## Resources
+## Contributing
 
-- https://help.github.com/en/actions/automating-your-workflow-with-github-actions/using-environment-variables
-- https://octokit.github.io/rest.js/#octokit-routes-repos
+***BEFORE you start work on a feature or fix***, please read & follow the
+[contributing guidelines](https://github.com/xtreamwayz/.github/blob/master/CONTRIBUTING.md#contributing)
+to help avoid any wasted or duplicate effort.
 
-### Testing
+## Copyright and license
 
-- https://github.com/actions/toolkit/blob/master/packages/github/src/context.ts
-- https://github.com/actions/create-release/blob/master/src/create-release.js
-- https://github.com/actions/create-release/blob/master/tests/create-release.test.js
-
-### Other
-
-- https://github.com/ridedott/dependabot-auto-merge-action
-- https://github.com/sdras/awesome-actions
-- https://doc.mergify.io/getting-started.html
-- https://github.com/actions/hello-world-javascript-action
-- https://github.com/actions/create-release/blob/master/src/create-release.js
-- https://medium.com/mergify/automatic-merge-of-github-security-fixes-87d7781140c0
-- https://alexwlchan.net/2019/03/creating-a-github-action-to-auto-merge-pull-requests/
-- https://jeffrafter.com/working-with-github-actions/
-- https://github.com/pascalgn/automerge-action
-- https://github.com/gimenete/eslint-action/blob/master/lib/run.js
+Code released under the [MIT License](https://github.com/xtreamwayz/.github/blob/master/LICENSE.md).
+Documentation distributed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
