@@ -170,11 +170,13 @@ describe('Merge pull request', () => {
 
     nock('https://api.github.com')
       .put('/repos/owner/repo/pulls/6/merge')
-      .reply(405, {
+      .reply(409, {
         message: 'Pull Request is not mergeable',
       });
 
-    await expect(run()).rejects.toThrow('Pull Request is not mergeable');
+    await run();
+
+    assertLastWriteCall('::warning::Pull Request is not mergeable');
   });
 
   test('pull request is merged', async () => {
