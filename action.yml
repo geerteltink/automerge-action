@@ -1,13 +1,9 @@
-name: 'Continuous integration'
-description: 'Continuous integration tools for GitHub Actions'
+name: 'automerge'
+description: 'Auto merge pull requests'
 inputs:
-  command:  # id of input
-    description: 'command to run'
+  GITHUB_TOKEN:
+    description: 'GitHub action or PAT token'
     required: true
-    default: 'merge'
-outputs:
-  time: # id of output
-    description: 'The time the command was executed'
 runs:
   using: 'node12'
   main: 'dist/index.js'

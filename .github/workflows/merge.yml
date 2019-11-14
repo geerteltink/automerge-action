@@ -1,4 +1,4 @@
-name: auto-merge
+name: merge
 
 on:
   check_suite:
@@ -13,13 +13,13 @@ on:
       - unlocked
 
 jobs:
-  auto-merge:
+  merge:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Merge pull request
-        uses: xtreamwayz/auto-merge-action@master
+        uses: xtreamwayz/automerge-action@master
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         env:

@@ -1,11 +1,11 @@
-# auto-merge GitHub Action
+# automerge GitHub Action
 
 This action merges pull requests if all requirements are met.
 
 ## Example usage
 
 ```yaml
-uses: xtreamwayz/auto-merge-action@master
+uses: xtreamwayz/automerge-action@master
 with:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 env:
@@ -25,8 +25,8 @@ npm run build
 
 Merge pull request if:
 
-- [x] the `automerge` label is set
-- [x] the `work in progress` label is set
+- [x] the `auto-merge` label is set
+- [x] the `work-in-progress` label is not set
 - [x] the pull request is up to date (open, mergable, merged)
 - [x] the required checks have passed (if enabled in the branch protection rules)
 - [x] the required number of review approvals has been given (if enabled in the branch protection rules)
