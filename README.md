@@ -1,12 +1,6 @@
-# Continuous integration action
+# auto-merge GitHub Action
 
 This action merges pull requests if all requirements are met.
-
-## Inputs
-
-### `debug`
-
-**Optional**
 
 ## Example usage
 
