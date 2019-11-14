@@ -1669,7 +1669,8 @@ const run = async () => {
 
   const pull_number = getPullRequestFromContext();
   if (!pull_number) {
-    throw new Error('Could not get pull request information from context');
+    core.warning('Could not get pull request information from context');
+    return;
   }
   core.info(`pull request number: ${pull_number}`);
 

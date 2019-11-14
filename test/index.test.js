@@ -42,7 +42,9 @@ describe('Merge pull request', () => {
 
     const run = require('../src/merge.js');
 
-    await expect(run()).rejects.toThrow('Could not get pull request information from context');
+    await run();
+
+    assertLastWriteCall('::warning::Could not get pull request information from context');
   });
 
   test('it should get pr number from check_suite event', async () => {
