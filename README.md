@@ -32,6 +32,7 @@ Merge pull request if:
 - [x] the required number of review approvals has been given (if enabled in the branch protection rules)
 - [ ] TODO: automerge dependabot
 - [ ] TODO: require check_suite (Travis CI / Circle CI)
+- [ ] the pr has a milestone set
 
 ## Contributing
 

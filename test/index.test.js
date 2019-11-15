@@ -10,13 +10,12 @@ const os = require('os');
  *  assertWriteCalls([
  *    [`Pull request state must be open (currently: closed)${os.EOL}`],
  *  ]);
- *//*
+ */
 function assertWriteCalls(calls) {
   expect(process.stdout.write.mock.calls).toEqual(
     expect.arrayContaining(calls),
   );
 }
-*/
 
 /**
  * Assert that process.stdout.write was last called with all of the given arguments.
@@ -166,6 +165,8 @@ describe('Merge pull request', () => {
         mergeable: true,
         merged: false,
         merge_commit_sha: 'e5bd3914e2e596debea16f433f57875b5b90bcd6',
+        title: '<type>[optional scope]: <description>',
+        body: '',
       });
 
     nock('https://api.github.com')
@@ -187,11 +188,18 @@ describe('Merge pull request', () => {
     nock('https://api.github.com')
       .get('/repos/owner/repo/pulls/6')
       .reply(200, {
-        number: 1,
+        number: 6,
         labels: [{ name: 'auto-merge' }],
         state: 'open',
         mergeable: true,
         merged: false,
+        title: '<type>[optional scope]: <description>',
+        body: `
+          [optional body]
+
+          ## PR Checklist
+          This should be removed
+          `,
       });
 
     nock('https://api.github.com')
@@ -203,6 +211,10 @@ describe('Merge pull request', () => {
 
     await run();
 
-    assertLastWriteCall('Pull Request successfully merged');
+    assertWriteCalls([
+      [`<type>[optional scope]: <description> (#6)${os.EOL}`],
+      [`[optional body]${os.EOL}`],
+      [`Pull Request successfully merged${os.EOL}`],
+    ]);
   });
 });

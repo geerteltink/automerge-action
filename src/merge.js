@@ -92,16 +92,25 @@ const run = async () => {
     return;
   }
 
-  // Merge pull request
   try {
+    core.info(`Trying to merge #${pull_number}`);
+
+    const commit_title = `${pullRequestResponseData.title} (#${pull_number})`;
+    const commit_message = pullRequestResponseData.body.replace(/(## PR Checklist[\w\W\s\S]*)/gm, '').trim();
+
+    // Merge pull request
     // https://octokit.github.io/rest.js/#octokit-routes-pulls-merge
     const pullRequestMergeResponse = await github.pulls.merge({
       owner,
       repo,
       pull_number,
-      commit_title: `merge: pull request (#${pull_number})`,
-      merge_method: 'merge',
+      commit_title,
+      commit_message,
+      merge_method: 'squash',
     });
+
+    core.info(commit_title);
+    core.info(commit_message);
 
     if (pullRequestMergeResponse.status !== 200) {
       core.warning(pullRequestMergeResponse.data.message);
@@ -110,6 +119,8 @@ const run = async () => {
 
     core.info(pullRequestMergeResponse.data.message);
   } catch (e) {
+    // Convert Error to warning so the check status does not fail
+    // TODO: This should be converted to a neutral exit once it is added to @actions/core
     core.warning(e.message);
   }
 };
