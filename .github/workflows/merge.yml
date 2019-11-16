@@ -14,7 +14,6 @@ on:
 
 jobs:
   merge:
-    name: ci/merge
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
