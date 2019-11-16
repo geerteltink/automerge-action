@@ -1,12 +1,16 @@
 module.exports = {
   verbose: true,
   clearMocks: true,
-  moduleFileExtensions: ['js', 'json', 'node'],
   testEnvironment: 'node',
-  testMatch: ['**/test/*.test.js'],
-  transformIgnorePatterns: ['<rootDir>/node_modules/'],
-  moduleDirectories: ['node_modules', 'src'],
-  globals: {
-    NODE_ENV: 'test',
+  collectCoverageFrom: [
+    'src/merge.js',
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80,
+    },
   },
 };
